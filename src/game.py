@@ -16,7 +16,7 @@ class Game:
         pygame.display.set_caption("pygame - prod")
 
         # Change map
-        tmx_data = pytmx.util_pygame.load_pygame("map.tmx")
+        tmx_data = pytmx.util_pygame.load_pygame("../map/map.tmx")
         map_data = pyscroll.data.TiledMapData(tmx_data)
         map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
         map_layer.zoom = 2
@@ -61,7 +61,7 @@ class Game:
         self.map = "house"
 
         # Change map
-        tmx_data = pytmx.util_pygame.load_pygame("house.tmx")
+        tmx_data = pytmx.util_pygame.load_pygame("../map/house.tmx")
         map_data = pyscroll.data.TiledMapData(tmx_data)
         map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
         map_layer.zoom = 2
@@ -90,7 +90,7 @@ class Game:
         self.map = "world"
 
         # Change map
-        tmx_data = pytmx.util_pygame.load_pygame("map.tmx")
+        tmx_data = pytmx.util_pygame.load_pygame("../map/map.tmx")
         map_data = pyscroll.data.TiledMapData(tmx_data)
         map_layer = pyscroll.orthographic.BufferedRenderer(map_data, self.screen.get_size())
         map_layer.zoom = 2
