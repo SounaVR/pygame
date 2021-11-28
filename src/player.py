@@ -1,43 +1,36 @@
 import pygame
 
+from src.animation import AnimateSprite
 
-class Player(pygame.sprite.Sprite):
 
-    def __init__(self, x, y):
-        super().__init__()
-        self.sprite_sheet = pygame.image.load("../sprites/player.png")
+class Entity(AnimateSprite):
+
+    def __init__(self, name, x, y):
+        super().__init__(name)
         self.image = self.get_image(0, 0)
         self.image.set_colorkey([0, 0, 0])
         self.rect = self.image.get_rect()
         self.position = [x, y]
-        self.images = {
-            "up": self.get_image(0, 96),
-            "down": self.get_image(0, 0),
-            "right": self.get_image(0, 64),
-            "left": self.get_image(0, 32)
-        }
         self.feet = pygame.Rect(0, 0, self.rect.width * 0.5, 12)
         self.old_position = self.position.copy()
-        self.speed = 1
-
-    def get(self):
-        self.image = self.images["down"]
-        self.image.set_colorkey([0, 0, 0])
-        return self.image
 
     def save_location(self): self.old_position = self.position.copy()
 
-    def move_player(self, type):
-        self.image = self.images[type]
-        self.image.set_colorkey([0, 0, 0])
-        if type == "up":
-            self.position[1] -= self.speed
-        elif type == "down":
-            self.position[1] += self.speed
-        elif type == "right":
-            self.position[0] += self.speed
-        elif type == "left":
-            self.position[0] -= self.speed
+    def move_right(self):
+        self.change_animation('right')
+        self.position[0] += self.speed
+
+    def move_left(self):
+        self.change_animation('left')
+        self.position[0] -= self.speed
+
+    def move_up(self):
+        self.change_animation('up')
+        self.position[1] -= self.speed
+
+    def move_down(self):
+        self.change_animation('down')
+        self.position[1] += self.speed
 
     def update(self):
         self.rect.topleft = self.position
@@ -47,7 +40,54 @@ class Player(pygame.sprite.Sprite):
         self.position = self.old_position
         self.update()
 
-    def get_image(self, x, y):
-        image = pygame.Surface([32, 32])
-        image.blit(self.sprite_sheet, (0, 0), (x, y, 32, 32))
-        return image
+
+class Player(Entity):
+
+    def __init__(self):
+        super().__init__('player', 0, 0)
+
+
+class NPC(Entity):
+
+    def __init__(self, name, pathPointsCount, dialog):
+        super().__init__(name, 0, 0)
+        self.pathPointsCount = pathPointsCount
+        self.dialog = dialog
+        self.points = []
+        self.name = name
+        self.speed = 0.50
+        self.current_point = 0
+
+    def move(self):
+        current_point = self.current_point
+        target_point = self.current_point + 1
+
+        if target_point >= self.pathPointsCount:
+            target_point = 0
+
+        current_rect = self.points[current_point]
+        target_rect = self.points[target_point]
+
+        if current_rect.y < target_rect.y and abs(current_rect.x - target_rect.x) < 3:
+            self.move_down()
+        elif current_rect.y > target_rect.y and abs(current_rect.x - target_rect.x) < 3:
+            self.move_up()
+        elif current_rect.x > target_rect.x and abs(current_rect.y - target_rect.y) < 3:
+            self.move_left()
+        elif current_rect.x < target_rect.x and abs(current_rect.y - target_rect.y) < 3:
+            self.move_right()
+
+        if self.rect.colliderect(target_rect):
+            self.current_point = target_point
+
+    def teleport_spawn(self):
+        location = self.points[self.current_point]
+        self.position[0] = location.x
+        self.position[1] = location.y
+        self.save_location()
+
+    def load_points(self, tmx_data):
+        for num in range(1, self.pathPointsCount+1):
+            point = tmx_data.get_object_by_name(f'{self.name}_path{num}')
+            rect = pygame.Rect(point.x, point.y, point.width, point.height)
+            self.points.append(rect)

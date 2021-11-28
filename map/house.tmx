@@ -131,7 +131,7 @@
   <object id="11" type="collision" x="97" y="271.667" width="222.667" height="15.6667"/>
   <object id="12" type="collision" x="96.6667" y="81" width="222.667" height="30.3333"/>
   <object id="13" name="exit_house" x="162" y="257.667" width="27.6667" height="12.6667"/>
-  <object id="14" name="spawn_house" x="176.33" y="240">
+  <object id="14" name="spawn_house" x="159.239" y="224.909">
    <point/>
   </object>
  </objectgroup>
