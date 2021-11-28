@@ -3,9 +3,6 @@ import pygame
 
 class DialogBox:
 
-    X_POSITION = 60
-    Y_POSITION = 470
-
     def __init__(self):
         self.box = pygame.image.load('../dialogs/dialog_box.png')
         self.box = pygame.transform.scale(self.box, (700, 100))
@@ -14,6 +11,8 @@ class DialogBox:
         self.letter_index = 0
         self.font = pygame.font.Font('../dialogs/dialog_font.ttf', 18)
         self.reading = False
+        self.Y_POSITION = pygame.display.get_surface().get_height() - self.box.get_height()
+        self.X_POSITION = pygame.display.get_surface().get_width() - self.box.get_width()
 
     def execute(self, dialog=[]):
         if self.reading:
@@ -30,7 +29,7 @@ class DialogBox:
             if self.letter_index >= len(self.texts[self.text_index]):
                 self.letter_index = self.letter_index
 
-            screen.blit(self.box, (self.X_POSITION, self.Y_POSITION))
+            screen.blit(self.box, (self.X_POSITION - 40, self.Y_POSITION))
             text = self.font.render(self.texts[self.text_index][0:self.letter_index], False, (0, 0, 0))
             screen.blit(text, (self.X_POSITION + 60, self.Y_POSITION + 30))
 
