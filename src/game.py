@@ -1,7 +1,4 @@
 import pygame
-import pytmx
-import pyscroll
-
 from player import Player
 from src.dialog import DialogBox
 from src.map import MapManager
@@ -13,7 +10,8 @@ class Game:
         self.running = True
 
         # Game screen
-        self.screen = pygame.display.set_mode((800, 600))
+        flags = pygame.NOFRAME | pygame.FULLSCREEN | pygame.SCALED
+        self.screen = pygame.display.set_mode((800, 600), flags, vsync=1)
         pygame.display.set_caption("pygame - prod")
 
         # Create the player
